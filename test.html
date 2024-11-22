@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Blinking Eyes</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #121212;
+            overflow: hidden;
+        }
+        .face {
+            width: 100px;
+            height: 100px;
+            background-color: black;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px; /* Position it a bit below the top */
+            transition: transform 0.3s ease; /* Smooth hop animation */
+        }
+        .eye {
+            width: 18px;
+            height: 18px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            transition: height 0.2s ease, transform 0.1s ease;
+        }
+        .eye.left { left: 25%; }
+        .eye.right { right: 25%; }
+        .eye.blink {
+            height: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="face">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+    </div>
+    <script>
+        const face = document.querySelector('.face'); // Select the face element
+        const eyes = document.querySelectorAll('.eye'); // Select both eye elements
+        let blinkInterval; // Interval variable for blinking
+        let blinkCount = 0; // Count to track the blink pattern
+
+        // Function to make eyes follow the cursor
+        function followCursor(e) {
+            // Get mouse and face center positions
+            const { clientX: mouseX, clientY: mouseY } = e;
+            const { left, top, width, height } = face.getBoundingClientRect();
+            const faceCenterX = left + width / 2;
+            const faceCenterY = top + height / 2;
+
+            // Calculate angle and distance for eye movement
+            const angle = Math.atan2(mouseY - faceCenterY, mouseX - faceCenterX);
+            const distance = Math.min(15, Math.hypot(mouseX - faceCenterX, mouseY - faceCenterY) / 5);
+
+            // Move each eye in the direction of the cursor
+            eyes.forEach(eye => {
+                eye.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance * 1.2}px)`;
+            });
+        }
+
+        // Function to simulate blinking
+        function blink() {
+            // Add the blink class to each eye, making them "close"
+            eyes.forEach(eye => eye.classList.add('blink'));
+
+            // After a short delay, remove the blink class to "open" eyes again
+            setTimeout(() => {
+                eyes.forEach(eye => eye.classList.remove('blink'));
+            }, 200); // Matches the CSS transition duration for smoothness
+        }
+
+        // Function to start blinking at intervals
+        function startBlinking() {
+            blinkInterval = setInterval(() => {
+                blink(); // Regular blink
+                if (++blinkCount % 2 !== 0) setTimeout(blink, 300); // Occasional double blink
+            }, 5000); // Blinks every 5 seconds
+        }
+
+        // Function to make the face "hop" when clicked
+        function hop() {
+            // Apply transform to move the face up
+            face.style.transform = 'translateY(-30px)';
+
+            // Return face to original position after short delay
+            setTimeout(() => {
+                face.style.transform = 'translateY(0)';
+            }, 300); // Matches CSS transition duration
+        }
+
+        // Add event listeners
+        document.addEventListener('mousemove', followCursor); // Make eyes follow cursor
+        face.addEventListener('click', hop); // Make face hop on click
+
+        // Start the blinking behavior
+        startBlinking();
+    </script>
+</body>
+</html>
