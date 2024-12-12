@@ -47,8 +47,8 @@
         <div class="eye right"></div>
     </div>
     <script>
-        const face = document.querySelector('.face'); // Select the face element
-        const eyes = document.querySelectorAll('.eye'); // Select both eye elements
+        const face = document.querySelector('.face');
+        const eyes = document.querySelectorAll('.eye');
         let blinkInterval; // Interval variable for blinking
         let blinkCount = 0; // Count to track the blink pattern
 
@@ -99,8 +99,7 @@
                 face.style.transform = 'translateY(0)';
             }, 300); // Matches CSS transition duration
         }
-
-        // Add event listeners
+
         document.addEventListener('mousemove', followCursor); // Make eyes follow cursor
         face.addEventListener('click', hop); // Make face hop on click
 
